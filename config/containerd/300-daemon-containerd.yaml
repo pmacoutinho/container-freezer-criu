@@ -56,7 +56,7 @@ spec:
             - name: freezer-fifo
               mountPath: /run/freezer-fifo
             - name: freezer-checkpoints
-              mountPath: /run/freezer-checkpoints
+              mountPath: /var/lib/freezer-checkpoints
             # Read-only host root so the capability probe can stat the host's
             # criu binary (the freeze path shells out to criu on the host).
             - name: host-root
@@ -78,9 +78,11 @@ spec:
           hostPath:
             path: /run/freezer-fifo
             type: DirectoryOrCreate
+        # Checkpoint images must be on persistent storage, not tmpfs, so that
+        # checkpointing actually frees RAM.
         - name: freezer-checkpoints
           hostPath:
-            path: /run/freezer-checkpoints
+            path: /var/lib/freezer-checkpoints
             type: DirectoryOrCreate
         - name: host-root
           hostPath:

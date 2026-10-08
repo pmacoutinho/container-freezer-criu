@@ -30,8 +30,11 @@ const (
 	// checkpointBaseDir is the host directory where CRIU checkpoint images
 	// are stored. Using a filesystem path instead of the containerd content
 	// store avoids the rootfs diff computation, which fails on overlay
-	// filesystems that do not support xattr (e.g. kernel <5.11).
-	checkpointBaseDir = "/run/freezer-checkpoints"
+	// filesystems that do not support xattr (e.g. kernel <5.11). It must be
+	// on persistent storage, not tmpfs: /run (and /tmp on the RSUs) is
+	// RAM-backed, so images stored there would not free the memory that
+	// checkpointing is meant to release.
+	checkpointBaseDir = "/var/lib/freezer-checkpoints"
 )
 
 // criLogWriter formats container output in CRI log format
